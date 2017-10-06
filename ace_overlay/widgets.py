@@ -68,11 +68,6 @@ class AceOverlayWidget(forms.Textarea):
                     <div class='header'>\
                         <div class='title'>Editing...</div>\
                         <div class='buttons'>\
-                            <a href='#' class='beautify' title='Beautify'><span>Beautify<span></a>\
-                            <a href='#' class='align left' title='Align Left'><span></span></a>\
-                            <a href='#' class='align right' title='Align Right'><span></span></a>\
-                            <a href='#' class='align top' title='Align Top'><span></span></a>\
-                            <a href='#' class='align bottom' title='Align Bottom'><span></span></a>\
                             <a href='#' class='cancel'>Cancel</a><a href='#' class='save'>Close</a>\
                         </div>\
                     </div>\
