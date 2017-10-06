@@ -38,6 +38,7 @@
         editor.setTheme("ace/theme/" + theme);
         editor.getSession().setMode("ace/mode/" + mode);
         editor.getSession().setUseWrapMode(wordwrap);
+        editor.getSession().setTabSize(2);
         editor.setShowPrintMargin(printmargin);
         editor.setOptions({
             readOnly: false,
@@ -101,39 +102,6 @@
             close_overlay($(this).closest('.overlay-container'));
         });
 
-        $(".ace-overlay .align.right").bind("click", function (event) {
-            event.preventDefault();
-            attempt_to_align(this, "right");
-        });
-
-        $(".ace-overlay .align.left").bind("click", function (event) {
-            event.preventDefault();
-            attempt_to_align(this, "left");
-        });
-
-        $(".ace-overlay .align.top").bind("click", function (event) {
-            event.preventDefault();
-            attempt_to_align(this, "top");
-        });
-
-        $(".ace-overlay .align.bottom").bind("click", function (event) {
-            event.preventDefault();
-            attempt_to_align(this, "bottom");
-        });
-
-        $(".ace-overlay .beautify").bind("click", function (event) {
-            event.preventDefault();
-            var overlay_container = $('.ace-overlay').find('.overlay-container');
-            var editor = ace.edit($(overlay_container).find(".django-ace-widget")[0]);
-            var text = editor.session.getValue();
-            try {
-                text = JSON.stringify(JSON.parse(text), undefined, 4);
-            } catch (err) {
-                text = js_beautify(text);
-            }
-            editor.session.setValue(text);
-        });
-
         $(document).bind("keydown", function (event) {
             var is_escape_key = event.keyCode == 27;
             if (is_escape_key) {
@@ -160,25 +128,25 @@
         $(overlay_container).addClass('open');
 
         var open_overlays = $('.overlay-container.open').not(overlay_container[0]);
-        if (open_overlays.length > 0) {
-            var first_overlay = open_overlays[0];
-            var opposite_class = get_opposite_alignment(first_overlay);
-
-            if (opposite_class == null) {
-                apply_alignment(overlay_container, "left");
-                apply_alignment(first_overlay, "right");
-            } else {
-                apply_alignment(overlay_container, opposite_class);
-            }
-
-            if (open_overlays.length > 1) {
-                for (var k = 1; k < open_overlays.length; k++) {
-                    // console.log("close remaining overlay ..."+k)
-                    var overlay = open_overlays[k];
-                    close_overlay(overlay);
-                }
-            }
-        }
+        // if (open_overlays.length > 0) {
+        //     var first_overlay = open_overlays[0];
+        //     var opposite_class = get_opposite_alignment(first_overlay);
+        //
+        //     if (opposite_class == null) {
+        //         apply_alignment(overlay_container, "left");
+        //         apply_alignment(first_overlay, "right");
+        //     } else {
+        //         apply_alignment(overlay_container, opposite_class);
+        //     }
+        //
+        //     if (open_overlays.length > 1) {
+        //         for (var k = 1; k < open_overlays.length; k++) {
+        //             // console.log("close remaining overlay ..."+k)
+        //             var overlay = open_overlays[k];
+        //             close_overlay(overlay);
+        //         }
+        //     }
+        // }
     }
 
     function close_overlay(overlay_container) {
@@ -197,62 +165,6 @@
 
         $(overlay).data('editor').destroy();
         $(overlay_container).find(".django-ace-widget").empty();
-
-        $(overlay_container).find('a.align').removeClass("active");
-        $(overlay_container).removeClass("right left top bottom");
-    }
-
-    function attempt_to_align(button, direction, inverse) {
-        var isActive = $(button).hasClass("active");
-        var overlay_container = $(button).closest('.overlay-container');
-
-        if (isActive) {
-            $(overlay_container).removeClass(direction);
-            $(button).removeClass("active");
-        } else {
-            apply_alignment(overlay_container, direction)
-        }
-
-        //If there is another open container, set it to the inverse.
-        var open_overlays = $('.overlay-container.open').not(overlay_container[0]);
-        if (open_overlays.length > 0) {
-            var first_overlay = open_overlays[0];
-            var opposite_class = get_opposite_alignment(overlay_container);
-
-            if (opposite_class == null) {
-                close_overlay(first_overlay)
-            } else {
-                apply_alignment(first_overlay, opposite_class);
-            }
-
-            if (open_overlays.length > 1) {
-                for (var k = 1; k < open_overlays.length; k++) {
-                    // console.log("close remaining overlay ..."+k)
-                    var overlay = open_overlays[k];
-                    close_overlay(overlay);
-                }
-            }
-        }
-    }
-
-    function apply_alignment(overlay_container, direction) {
-        $(overlay_container).find('a.align').removeClass("active");
-        $(overlay_container).removeClass("right left top bottom");
-        $(overlay_container).addClass(direction);
-        $(overlay_container).find("a.align." + direction).addClass("active");
-    }
-
-    function get_opposite_alignment(overlay_container) {
-        if ($(overlay_container).hasClass("right")) {
-            return "left";
-        } else if ($(overlay_container).hasClass("left")) {
-            return "right";
-        } else if ($(overlay_container).hasClass("top")) {
-            return "bottom";
-        } else if ($(overlay_container).hasClass("bottom")) {
-            return "top";
-        }
-        return null;
     }
 
     $(document).ready(function () {
